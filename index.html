@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ფრაზების გენერატორი</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .content {
+            margin-top: 30px;
+        }
+        .quote-box {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .category-image {
+            max-width: 300px;
+            margin: 20px auto;
+            border-radius: 10px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            font-size: 14px;
+        }
+        .small-text {
+            font-size: 12px;
+            color: #aaa;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ფრაზების გენერატორი</h1>
+        <p>აირჩიე კატეგორია და მიიღე შემთხვევითი ფრაზა</p>
+    </header>
+    
+    <div class="content">
+        <img id="categoryImage" class="category-image" src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Mount_Kazbegi_Georgia.jpg" alt="კატეგორიის სურათი">
+        <div id="quote" class="quote-box">
+            <p>აქ გამოჩნდება ფრაზა :)</p>
+        </div>
+        <!-- კატეგორიების ღილაკები -->
+        <button onclick="generateQuote('motivation')">მოტივაცია</button>
+        <button onclick="generateQuote('funny')">სასაცილო</button>
+        <button onclick="generateQuote('facts')">ფაქტები</button>
+    </div>
+    
+    <footer>
+        <p>© 2024 ფრაზების გენერატორი | ყველა უფლება დაცულია</p>
+        <p class="small-text">Nika Nanadze production</p>
+    </footer>
+
+    <script>
+        // ფრაზების სია კატეგორიების მიხედვით
+        const quotes = {
+            motivation: [
+                "გამარჯობა, გააგრძელე წარმატება!",
+                "არ დანებდე, ოცნებები აუცილებლად ახდება!",
+                "დაიჯერე შენი ძალა!",
+                "ცხოვრებაში მთავარი სიძლიერეა!",
+                "გაიღიმე — ეს შენი საუკეთესო იარაღია!"
+            ],
+            funny: [
+                "თუ დღეს კარგად არ ხარ, ხვალ უკეთესი იქნება!",
+                "დედაჩემი ამბობს, რომ ყველაზე ჭკვიანი ვარ :)",
+                "ჭამის დრო მოვიდა! მეტი ჭამე!",
+                "რატომ წავიდა ქათამი გზის გადაღმა? ისიც არ იცის!",
+                "გახსოვდეს: შოკოლადი ხსნის ყველა პრობლემას!"
+            ],
+            facts: [
+                "საქართველო ერთ-ერთი უძველესი მეღვინეობის ქვეყანაა.",
+                "კავკასიონის მთა შხარა ყველაზე მაღალია საქართველოში.",
+                "ქართული ანბანი უნიკალურია მსოფლიოში.",
+                "თბილისი ცნობილია თავისი გოგირდის აბანოებით.",
+                "ბორჯომის წყალი მსოფლიოს ცნობილია თავისი სამკურნალო თვისებებით."
+            ]
+        };
+
+        // სურათები კატეგორიებისთვის
+        const categoryImages = {
+            motivation: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Mount_Kazbegi_Georgia.jpg",
+            funny: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Georgian_traditional_dance.jpg",
+            facts: "https://upload.wikimedia.org/wikipedia/commons/6/68/Borjomi_Park.jpg"
+        };
+
+        // ფუნქცია, რომელიც ირჩევს შემთხვევით ფრაზას კონკრეტული კატეგორიიდან და აჩვენებს შესაბამის სურათს
+        function generateQuote(category) {
+            const categoryQuotes = quotes[category];
+            const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
+            const quoteBox = document.getElementById("quote");
+            const categoryImage = document.getElementById("categoryImage");
+            quoteBox.innerHTML = `<p>${categoryQuotes[randomIndex]}</p>`;
+            categoryImage.src = categoryImages[category];
+        }
+    </script>
+</body>
+</html>
