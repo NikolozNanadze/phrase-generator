@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             color: #333;
+            transition: background-color 0.3s, color 0.3s;
         }
         header {
             background-color: #4CAF50;
@@ -34,7 +35,6 @@
             border-radius: 10px;
             color: #333;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in-out;
         }
         button {
             font-size: 18px;
@@ -45,25 +45,12 @@
             border-radius: 5px;
             cursor: pointer;
             margin: 10px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
         }
         button:hover {
             background-color: #45a049;
-            transform: scale(1.1);
         }
-        .share-button {
-            font-size: 16px;
+        .comments {
             margin-top: 20px;
-            padding: 8px 15px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .share-button:hover {
-            background-color: #0056b3;
         }
         footer {
             margin-top: 50px;
@@ -77,17 +64,10 @@
             font-size: 12px;
             color: #aaa;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
     </style>
+    <!-- Подключение Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
 </head>
 <body>
     <header>
@@ -99,11 +79,15 @@
         <div id="quote" class="quote-box">
             <p>აქ გამოჩნდება ფრაზა :)</p>
         </div>
-        <!-- ღილაკები -->
-        <button onclick="generateQuote('motivation')">მოტივაცია</button>
-        <button onclick="generateQuote('funny')">პოზიტიური</button>
-        <button onclick="generateQuote('facts')">ფაქტები</button>
-        <button class="share-button" onclick="shareSite()">გაუზიარე</button>
+        <!-- Кнопки -->
+        <button onclick="likeQuote()">👍 Лайк</button>
+        <span id="likeCount">0</span> лайков
+        <br>
+        <input type="text" id="commentInput" placeholder="Напишите комментарий">
+        <button onclick="addComment()">Добавить комментарий</button>
+        <div id="comments" class="comments">
+            <h3>Комментарии:</h3>
+        </div>
     </div>
     
     <footer>
@@ -112,71 +96,57 @@
     </footer>
 
     <script>
-        // ფრაზების სია კატეგორიების მიხედვით (30 ფრაზა თითოეულში)
-        const quotes = {
-            motivation: [
-                "წარმატება იწყება პატარა ნაბიჯით!",
-                "არ დანებდე, შენ ყველაფერი შეგიძლია!",
-                "დაიჯერე შენს ძალაში და იბრძოლე!",
-                "ყველაფერი კარგად იქნება, თუ არ გაჩერდები.",
-                "ოცნებები ახდება, როცა ბევრს შრომობ.",
-                "სიცოცხლე სავსეა შესაძლებლობებით!",
-                "იყავი საკუთარი თავის საუკეთესო ვერსია!",
-                "ყოველი დღე ახალი შანსია!",
-                "მხოლოდ შენ შეგიძლია შეცვალო საკუთარი მომავალი.",
-                "წარმატებისკენ მიმავალი გზა რთულია, მაგრამ ღირს.",
-                "სიყვარული და სიკეთე – შენი მთავარი იარაღია.",
-                "დაიმახსოვრე: შენ შეგიძლია ნებისმიერი ოცნების განხორციელება.",
-                "სიცოცხლე მხოლოდ ერთხელ გეძლევა – გამოიყენე მაქსიმალურად!",
-                "არავის მისცე უფლება შენი ოცნებები დაგამხოს.",
-                "ყოველი დღე არის ახალი შესაძლებლობა!"
-            ],
-            funny: [
-                "შოკოლადი ყოველთვის უკეთესია, ვიდრე პრობლემა.",
-                "დღეს მაქვს გენიალური იდეა – დავიძინო მთელი დღე",
-                "სიცილი სჯობს, ვიდრე ტირილი – ნაკლებ ენერგიას ხარჯავს",
-                "თუ არ ხარ ბედნიერი, მიირთვი ხინკალი და იყავი",
-                "ბედნიერება პატარა დეტალებშია, მაგალითად, ხაჭაპურში",
-                "რატომ ვჭამ ამდენს? რომ დავფიქრდე პრობლემებზე.",
-                "რატომ შევდივართ სახლში? რომ არ გავჩერდეთ ქუჩაში.",
-                "ვფიქრობ, სარკეში რომ ვიყურები, ჩემი ჩრდილიც იცინის",
-                "ქათამი გადაკვეთა გზას და ფიქრობდა: 'რატომ ვარ ასეთი გემრიელი?'",
-                "ისიც რომ ვიცოდე, რატომ მაცინებს ჩემი მეგობარი?",
-                "კომფორტული დღე იწყება კომფორტული საწოლით",
-                "გოგირდის აბანოები? იდეალური ადგილი დასასვენებლად და ფიქრისთვის.",
-            ],
-            facts: [
-                "საქართველო ღვინის სამშობლოა!",
-                "ყაზბეგი ერთ-ერთი ყველაზე მაღალი მთაა კავკასიონზე.",
-                "ქართული ანბანი მსოფლიოს ერთ-ერთი უნიკალურია.",
-                "თბილისი ცნობილია გოგირდის აბანოებით.",
-                "ბორჯომი მსოფლიოში ცნობილია თავისი სამკურნალო თვისებებით.",
-                "გერგეთის სამება – სულიერი სიმშვიდის ადგილი.",
-                "ქართული ცეკვა მნახველებს მუდამ აკვირვებს.",
-                "სვანეთი – ზღაპრული მთების და ტრადიციების სამყარო.",
-                "ბათუმის ბულვარი შავი ზღვის მარგალიტია.",
-                "საქართველოში 12 000-ზე მეტი ისტორიული ძეგლია.",
-                "კახეთი ცნობილია საუკეთესო ღვინით.",
-                "სამეგრელოს კულინარია – მეგრული კერძები ყველას იზიდავს!",
-                "საქართველოში მზე 2800 საათზე მეტხანს ანათებს წელიწადში.",
-                "ქართველი ხალხის სტუმართმოყვარეობა ლეგენდარულია.",
-                "გუდაურში შეგიძლიათ ისრიალოთ კავკასიონის უნიკალურ მთებზე!"
-            ]
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCV2LUmPqo1HcELDRjk6K4H6rxT9gB4MvU",
+            authDomain: "phrase-544d8.firebaseapp.com",
+            databaseURL: "https://phrase-544d8-default-rtdb.firebaseio.com/",
+            projectId: "phrase-544d8",
+            storageBucket: "phrase-544d8.appspot.com",
+            messagingSenderId: "585344862547",
+            appId: "1:585344862547:web:ffae33c41914d42628b9a6",
+            measurementId: "G-DGBHZ916Y5"
         };
 
-        // ფუნქცია, რომელიც ირჩევს შემთხვევით ფრაზას
-        function generateQuote(category) {
-            const categoryQuotes = quotes[category];
-            const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
-            const quoteBox = document.getElementById("quote");
-            quoteBox.innerHTML = `<p>${categoryQuotes[randomIndex]}</p>`;
+        // Инициализация Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+        const quoteId = "quote1"; // ID текущей фразы
+
+        // Обновление количества лайков
+        function likeQuote() {
+            const likeRef = firebase.database().ref(`quotes/${quoteId}/likes`);
+            likeRef.transaction((currentLikes) => {
+                return (currentLikes || 0) + 1;
+            });
         }
 
-        // ფუნქცია საიტის გასაზიარებლად
-        function shareSite() {
-            const siteURL = window.location.href;
-            alert(`გაუზიარე ეს საიტი: ${siteURL}`);
+        // Отображение лайков в реальном времени
+        const likeCountElement = document.getElementById("likeCount");
+        firebase.database().ref(`quotes/${quoteId}/likes`).on("value", (snapshot) => {
+            likeCountElement.innerText = snapshot.val() || 0;
+        });
+
+        // Добавление комментария
+        function addComment() {
+            const commentInput = document.getElementById("commentInput");
+            const commentText = commentInput.value;
+            if (commentText.trim() !== "") {
+                const commentsRef = firebase.database().ref(`quotes/${quoteId}/comments`);
+                commentsRef.push(commentText);
+                commentInput.value = "";
+            }
         }
+
+        // Отображение комментариев в реальном времени
+        const commentsElement = document.getElementById("comments");
+        firebase.database().ref(`quotes/${quoteId}/comments`).on("child_added", (snapshot) => {
+            const comment = snapshot.val();
+            const commentDiv = document.createElement("div");
+            commentDiv.innerText = comment;
+            commentsElement.appendChild(commentDiv);
+        });
     </script>
 </body>
 </html>
