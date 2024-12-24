@@ -7,96 +7,56 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             text-align: center;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-        }
-        h1 {
-            margin: 0;
-        }
-        .content {
-            margin-top: 30px;
+            background-color: #f4f4f9;
         }
         .quote-box {
-            font-size: 20px;
-            font-weight: bold;
             margin: 20px auto;
             padding: 20px;
-            max-width: 600px;
-            background: white;
+            background-color: white;
             border-radius: 10px;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 60%;
         }
         button {
-            font-size: 18px;
             padding: 10px 20px;
-            color: white;
             background-color: #4CAF50;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px;
         }
         button:hover {
             background-color: #45a049;
         }
-        .comments {
-            margin-top: 20px;
-        }
         footer {
-            margin-top: 50px;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            text-align: center;
+            margin-top: 30px;
             font-size: 14px;
         }
-        .small-text {
-            font-size: 12px;
-            color: #aaa;
-        }
     </style>
-    <!-- Подключение Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
 </head>
 <body>
     <header>
         <h1>ფრაზების გენერატორი</h1>
-        <p>დააჭირე ღილაკს და აღმოაჩინე ახალი ფრაზა!</p>
     </header>
-    
     <div class="content">
         <div id="quote" class="quote-box">
             <p>აქ გამოჩნდება ფრაზა :)</p>
         </div>
-        <!-- Кнопки -->
         <button onclick="likeQuote()">👍 Лайк</button>
-        <span id="likeCount">0</span> лайков
-        <br>
-        <input type="text" id="commentInput" placeholder="Напишите комментарий">
-        <button onclick="addComment()">Добавить комментарий</button>
-        <div id="comments" class="comments">
-            <h3>Комментарии:</h3>
-        </div>
+        <p id="likeCount">0 лайков</p>
     </div>
-    
     <footer>
-        <p>© 2024 ფრაზების გენერატორი | ყველა უფლება დაცულია</p>
-        <p class="small-text">Nika Nanadze production</p>
+        <p>© 2024</p>
     </footer>
 
-    <script>
-        // Firebase Configuration
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCV2LUmPqo1HcELDRjk6K4H6rxT9gB4MvU",
             authDomain: "phrase-544d8.firebaseapp.com",
@@ -108,44 +68,26 @@
             measurementId: "G-DGBHZ916Y5"
         };
 
-        // Инициализация Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database(app);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
         const quoteId = "quote1"; // ID текущей фразы
 
-        // Обновление количества лайков
+        // Функция для лайков
         function likeQuote() {
-            const likeRef = firebase.database().ref(`quotes/${quoteId}/likes`);
-            likeRef.transaction((currentLikes) => {
+            const likeRef = ref(database, `quotes/${quoteId}/likes`);
+            runTransaction(likeRef, (currentLikes) => {
                 return (currentLikes || 0) + 1;
             });
         }
 
-        // Отображение лайков в реальном времени
+        // Обновление лайков в реальном времени
         const likeCountElement = document.getElementById("likeCount");
-        firebase.database().ref(`quotes/${quoteId}/likes`).on("value", (snapshot) => {
-            likeCountElement.innerText = snapshot.val() || 0;
-        });
-
-        // Добавление комментария
-        function addComment() {
-            const commentInput = document.getElementById("commentInput");
-            const commentText = commentInput.value;
-            if (commentText.trim() !== "") {
-                const commentsRef = firebase.database().ref(`quotes/${quoteId}/comments`);
-                commentsRef.push(commentText);
-                commentInput.value = "";
-            }
-        }
-
-        // Отображение комментариев в реальном времени
-        const commentsElement = document.getElementById("comments");
-        firebase.database().ref(`quotes/${quoteId}/comments`).on("child_added", (snapshot) => {
-            const comment = snapshot.val();
-            const commentDiv = document.createElement("div");
-            commentDiv.innerText = comment;
-            commentsElement.appendChild(commentDiv);
+        const likeRef = ref(database, `quotes/${quoteId}/likes`);
+        onValue(likeRef, (snapshot) => {
+            const likes = snapshot.val();
+            likeCountElement.innerText = likes ? `${likes} лайков` : "0 лайков";
         });
     </script>
 </body>
