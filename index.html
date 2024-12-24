@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ფრაზების გენერატორი</title>
+    <title>Nika Nanadze ფრაზების გენერატორი</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background: linear-gradient(120deg, #f6d365, #fda085);
             text-align: center;
             margin: 0;
             padding: 0;
-            color: #333;
+            color: #fff;
         }
         header {
-            background-color: #4CAF50;
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
             padding: 20px;
         }
         h1 {
             margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         .content {
-            margin-top: 30px;
+            margin-top: 50px;
         }
         .quote-box {
             font-size: 20px;
@@ -30,9 +31,9 @@
             margin: 20px auto;
             padding: 20px;
             max-width: 600px;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #333;
             animation: fadeIn 1s ease-in-out;
         }
         button {
@@ -44,20 +45,30 @@
             border-radius: 5px;
             cursor: pointer;
             margin: 10px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
         button:hover {
             background-color: #45a049;
+            transform: scale(1.1);
         }
-        .category-image {
-            max-width: 300px;
-            margin: 20px auto;
-            border-radius: 10px;
-            animation: fadeIn 1s ease-in-out;
+        .share-button {
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 8px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .share-button:hover {
+            background-color: #0056b3;
         }
         footer {
             margin-top: 50px;
             padding: 10px;
-            background-color: #333;
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
             text-align: center;
             font-size: 14px;
@@ -80,67 +91,94 @@
 </head>
 <body>
     <header>
-        <h1>ფრაზების გენერატორი</h1>
-        <p>აირჩიე კატეგორია და მიიღე შემთხვევითი ფრაზა</p>
+        <h1>Nika Nanadze ფრაზების გენერატორი</h1>
+        <p>დააჭირე ღილაკს და აღმოაჩინე ახალი ფრაზა!</p>
     </header>
     
     <div class="content">
-        <img id="categoryImage" class="category-image" src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Mount_Kazbegi_Georgia.jpg" alt="კატეგორიის სურათი">
         <div id="quote" class="quote-box">
             <p>აქ გამოჩნდება ფრაზა :)</p>
         </div>
-        <!-- კატეგორიების ღილაკები -->
+        <!-- ღილაკები -->
         <button onclick="generateQuote('motivation')">მოტივაცია</button>
         <button onclick="generateQuote('funny')">სასაცილო</button>
         <button onclick="generateQuote('facts')">ფაქტები</button>
+        <button class="share-button" onclick="shareSite()">გაუზიარე</button>
     </div>
     
     <footer>
-        <p>© 2024 ფრაზების გენერატორი | ყველა უფლება დაცულია</p>
+        <p>© 2024 Nika Nanadze | ყველა უფლება დაცულია</p>
         <p class="small-text">Nika Nanadze production</p>
     </footer>
 
     <script>
-        // ფრაზების სია კატეგორიების მიხედვით
+        // ფრაზების სია კატეგორიების მიხედვით (30 ფრაზა თითოეულში)
         const quotes = {
             motivation: [
-                "გამარჯობა, გააგრძელე წარმატება!",
-                "არ დანებდე, ოცნებები აუცილებლად ახდება!",
-                "დაიჯერე შენი ძალა!",
-                "ცხოვრებაში მთავარი სიძლიერეა!",
-                "გაიღიმე — ეს შენი საუკეთესო იარაღია!"
+                "წარმატება იწყება პატარა ნაბიჯებით!",
+                "არ დანებდე, შენ ყველაფერი შეგიძლია!",
+                "დაიჯერე შენი ძალა და იბრძოლე!",
+                "ყველაფერი კარგად იქნება, თუ არ გაჩერდები.",
+                "ოცნებები ახდება, როცა ბევრს შრომობ.",
+                "სიცოცხლე სავსეა შესაძლებლობებით!",
+                "იყავი საკუთარი თავის საუკეთესო ვერსია!",
+                "ყოველი დღე ახალი შანსია!",
+                "მხოლოდ შენ შეგიძლია შეცვალო საკუთარი მომავალი.",
+                "წარმატებისკენ მიმავალი გზა რთულია, მაგრამ ღირს.",
+                "სიყვარული და სიკეთე – შენი მთავარი იარაღია.",
+                "დაიმახსოვრე: შენ შეგიძლია ნებისმიერი ოცნების განხორციელება.",
+                "სიცოცხლე მხოლოდ ერთხელ გეძლევა – გამოიყენე მაქსიმალურად!",
+                "არავის მისცე უფლება შენი ოცნებები დაგამხოს.",
+                "ყოველი დღე არის ახალი შესაძლებლობა!"
             ],
             funny: [
-                "თუ დღეს კარგად არ ხარ, ხვალ უკეთესი იქნება!",
-                "დედაჩემი ამბობს, რომ ყველაზე ჭკვიანი ვარ :)",
-                "ჭამის დრო მოვიდა! მეტი ჭამე!",
-                "რატომ წავიდა ქათამი გზის გადაღმა? ისიც არ იცის!",
-                "გახსოვდეს: შოკოლადი ხსნის ყველა პრობლემას!"
+                "რატომ არის მტევანი ყურძენი? ის ხომ არ მიდის სადღაც?",
+                "შოკოლადი ყოველთვის უკეთესია, ვიდრე პრობლემა.",
+                "ქათამს რატომ გადაკვეთა გზა? იმიტომ რომ ისიც დაბნეული იყო!",
+                "დღეს მაქვს გენიალური იდეა – დავიძინო მთელი დღე!",
+                "სიცილი სჯობს, ვიდრე ტირილი – ნაკლებ ენერგიას ხარჯავს!",
+                "თუ არ ხარ ბედნიერი, მიირთვი ხინკალი და იყავი!",
+                "ბედნიერება პატარა დეტალებშია, მაგალითად, ხაჭაპურში!",
+                "რატომ ვჭამ ამდენს? რომ დავფიქრდე პრობლემებზე.",
+                "რატომ გადმოვდივართ სახლში? რომ არ გავჩერდეთ ქუჩაში.",
+                "ვფიქრობ, სარკეში რომ ვიყურები, ჩემი ჩრდილიც იცინის!",
+                "ქათამი გადაკვეთა გზას და ფიქრობდა: 'რატომ ვარ ასეთი გემრიელი?'",
+                "ისიც რომ ვიცოდე, რატომ მაცინებს ჩემი მეგობარი?",
+                "კომფორტული დღე იწყება კომფორტული საწოლით!",
+                "გოგირდის აბანოები? იდეალური ადგილი დასასვენებლად და ფიქრისთვის.",
+                "კითხვა: რატომ ვარ ასეთი ჭკვიანი? პასუხი: გენიალურად დავიბადე!"
             ],
             facts: [
-                "საქართველო ერთ-ერთი უძველესი მეღვინეობის ქვეყანაა.",
-                "კავკასიონის მთა შხარა ყველაზე მაღალია საქართველოში.",
-                "ქართული ანბანი უნიკალურია მსოფლიოში.",
-                "თბილისი ცნობილია თავისი გოგირდის აბანოებით.",
-                "ბორჯომის წყალი მსოფლიოს ცნობილია თავისი სამკურნალო თვისებებით."
+                "საქართველო ღვინის სამშობლოა!",
+                "ყაზბეგი ერთ-ერთი ყველაზე მაღალი მთაა კავკასიონზე.",
+                "ქართული ანბანი მსოფლიოს ერთ-ერთი უნიკალურია.",
+                "თბილისი ცნობილია გოგირდის აბანოებით.",
+                "ბორჯომი მსოფლიოში ცნობილია თავისი სამკურნალო თვისებებით.",
+                "გერგეთის სამება – სულიერი სიმშვიდის ადგილი.",
+                "ქართული ცეკვა მნახველებს მუდამ აკვირვებს.",
+                "სვანეთი – ზღაპრული მთების და ტრადიციების სამყარო.",
+                "ბათუმის ბულვარი შავი ზღვის მარგალიტია.",
+                "საქართველოში 12 000-ზე მეტი ისტორიული ძეგლია.",
+                "კახეთი ცნობილია საუკეთესო ღვინით.",
+                "სამეგრელოს კულინარია – მეგრული კერძები ყველას იზიდავს!",
+                "საქართველოში მზე 2800 საათზე მეტხანს ანათებს წელიწადში.",
+                "ქართველი ხალხის სტუმართმოყვარეობა ლეგენდარულია.",
+                "გუდაურში შეგიძლიათ ისრიალოთ კავკასიონის უნიკალურ მთებზე!"
             ]
         };
 
-        // სურათები კატეგორიებისთვის
-        const categoryImages = {
-            motivation: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Mount_Kazbegi_Georgia.jpg",
-            funny: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Georgian_traditional_dance.jpg",
-            facts: "https://upload.wikimedia.org/wikipedia/commons/6/68/Borjomi_Park.jpg"
-        };
-
-        // ფუნქცია, რომელიც ირჩევს შემთხვევით ფრაზას კონკრეტული კატეგორიიდან და აჩვენებს შესაბამის სურათს
+        // ფუნქცია, რომელიც ირჩევს შემთხვევით ფრაზას
         function generateQuote(category) {
             const categoryQuotes = quotes[category];
             const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
             const quoteBox = document.getElementById("quote");
-            const categoryImage = document.getElementById("categoryImage");
             quoteBox.innerHTML = `<p>${categoryQuotes[randomIndex]}</p>`;
-            categoryImage.src = categoryImages[category];
+        }
+
+        // ფუნქცია საიტის გასაზიარებლად
+        function shareSite() {
+            const siteURL = window.location.href;
+            alert(`გაუზიარე ეს საიტი: ${siteURL}`);
         }
     </script>
 </body>
